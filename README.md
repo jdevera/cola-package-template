@@ -7,8 +7,10 @@ A starter template for building command packages for [Criteo's Command Launcher]
 1. **Copy the template:**
 
    ```bash
-   cp -r cola-template my-new-pkg
+   git clone https://github.com/jdevera/cola-package-template.git my-new-pkg
    cd my-new-pkg
+   rm -rf .git
+   git init
    ```
 
 2. **Rename the placeholders** (search for `# RENAME:` comments and `mypkg`):
