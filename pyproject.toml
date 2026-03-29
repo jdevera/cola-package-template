@@ -1,0 +1,36 @@
+[project]
+name = "mypkg"  # RENAME: your package name
+version = "0.1.0"
+description = "A Command Launcher package"
+requires-python = ">=3.13"
+dependencies = [
+    "click>=8.3.1",
+    "platformdirs>=4.9.4",
+    "pyyaml>=6.0.3",
+    "rich>=14.3.3",
+]
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "A"]
+fixable = ["ALL"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.13"
+ignore_missing_imports = true
+mypy_path = ["libs/python"]
+
+[tool.pytest.ini_options]
+pythonpath = ["libs/python"]
+testpaths = ["tests"]
+addopts = "-v --tb=short"
+
+[dependency-groups]
+dev = [
+    "mypy>=1.19.1",
+    "pytest>=9.0.2",
+    "ruff>=0.15.8",
+]

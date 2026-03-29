@@ -1,0 +1,193 @@
+---
+$schema: http://json-schema.org/draft-07/schema#
+title: Command Launcher Manifest Schema
+description: Schema for Command Launcher manifest.mf files
+type: object
+required:
+  - pkgName
+  - version
+  - cmds
+properties:
+  pkgName:
+    type: string
+    description: A unique name for your package
+    pattern: ^[a-zA-Z0-9_-]+$
+  version:
+    type: string
+    description: The version of your package
+  cmds:
+    type: array
+    description: List of command definitions
+    items:
+      $ref: '#/definitions/Command'
+additionalProperties: false
+
+definitions:
+  Command:
+    type: object
+    required:
+      - name
+      - type
+    properties:
+      name:
+        type: string
+        description: The name of the command
+      type:
+        type: string
+        enum:
+          - executable
+          - group
+          - system
+        description: "The type of command: executable, group, or system"
+      group:
+        type: string
+        description: >-
+          The group this command belongs to. Empty string for root level
+          commands
+      short:
+        type: string
+        description: Short description displayed in auto-complete and help
+      long:
+        type: string
+        description: Long description for detailed help
+      argsUsage:
+        type: string
+        description: Customize the one-line usage in help output
+      examples:
+        type: array
+        description: List of example entries for the command help
+        items:
+          $ref: '#/definitions/Example'
+      executable:
+        type: string
+        description: >-
+          The executable to call when running the command
+          (required for executable type)
+      args:
+        type: array
+        description: Static arguments to pass to the executable
+        items:
+          type: string
+      validArgs:
+        type: array
+        description: Static list of valid arguments for auto-completion
+        items:
+          type: string
+      validArgsCmd:
+        type: array
+        description: Command to run to get dynamic auto-completion options
+        items:
+          type: string
+      flags:
+        type: array
+        description: List of flags for the command (available in 1.9+)
+        items:
+          $ref: '#/definitions/Flag'
+      exclusiveFlags:
+        type: array
+        description: Groups of mutually exclusive flags
+        items:
+          type: array
+          items:
+            type: string
+          minItems: 2
+      groupFlags:
+        type: array
+        description: Groups of flags that must be used together
+        items:
+          type: array
+          items:
+            type: string
+          minItems: 2
+      requiredFlags:
+        type: array
+        description: >-
+          Deprecated: use flags property instead. Static list of required
+          flags
+        items:
+          type: string
+      checkFlags:
+        type: boolean
+        default: false
+        description: >-
+          Whether to parse and check flags before executing the command
+      requestedResources:
+        type: array
+        description: >-
+          Resources that the command requests (e.g., USERNAME, PASSWORD)
+        items:
+          type: string
+    allOf:
+      - if:
+          properties:
+            type:
+              const: executable
+        then:
+          required:
+            - executable
+            - args
+      - if:
+          properties:
+            type:
+              const: system
+        then:
+          required:
+            - executable
+            - args
+    additionalProperties: false
+
+  Flag:
+    type: object
+    required:
+      - name
+    properties:
+      name:
+        type: string
+        description: Flag name (without -- prefix)
+      short:
+        type: string
+        description: Flag short name (usually one letter, without - prefix)
+        pattern: ^[a-zA-Z]$
+      desc:
+        type: string
+        description: Flag description
+      type:
+        type: string
+        enum:
+          - string
+          - bool
+        default: string
+        description: Flag type
+      default:
+        type: string
+        description: Default value for string flags
+      required:
+        type: boolean
+        default: false
+        description: Whether the flag is required
+      values:
+        type: array
+        description: List of valid values for auto-completion
+        items:
+          type: string
+      valuesCmd:
+        type: array
+        description: Command to run to get dynamic values for auto-completion
+        items:
+          type: string
+    additionalProperties: false
+
+  Example:
+    type: object
+    required:
+      - scenario
+      - cmd
+    properties:
+      scenario:
+        type: string
+        description: Describes the use case for this example
+      cmd:
+        type: string
+        description: >-
+          Demonstrates the command to apply for the particular use case
+    additionalProperties: false

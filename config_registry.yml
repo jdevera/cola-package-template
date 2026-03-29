@@ -1,0 +1,14 @@
+# Configuration Registry
+# All configuration keys used by commands must be registered here.
+# Run `mypkg cfg registry` to list all registered keys.
+---
+version: 1
+
+keys:
+  # Example group — delete this and add your own keys
+  example:
+    description: Example configuration group (delete me)
+    keys:
+      greeting:
+        description: Default greeting message for the greet example command
+        example: "Hello"

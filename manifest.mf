@@ -1,0 +1,42 @@
+# yaml-language-server: $schema=./manifest.schema.yaml
+pkgName: mypkg  # RENAME: your package name
+version: 0.1.0
+cmds:
+  - name: __setup__
+    type: system
+    executable: '{{.PackageDir}}/_hooks/setup-hook.sh'
+    args: []
+
+  - name: cfg
+    type: executable
+    short: Manage package configuration
+    executable: '{{.PackageDir}}/pyrun.sh'
+    args:
+      - commands/_no_group/config_command.py
+    validArgsCmd:
+      - '{{.PackageDir}}/pyrun.sh'
+      - commands/_no_group/config_command.py
+      - complete
+
+  - name: examples
+    type: group
+    short: Example commands showing template patterns
+
+  - name: hello
+    type: executable
+    group: examples
+    short: Example bash command
+    executable: '{{.PackageDir}}/commands/examples/hello.sh'
+    args: []
+
+  - name: greet
+    type: executable
+    group: examples
+    short: Example Python/Click command with output formats
+    executable: '{{.PackageDir}}/pyrun.sh'
+    args:
+      - commands/examples/greet.py
+    validArgsCmd:
+      - '{{.PackageDir}}/pyrun.sh'
+      - commands/examples/greet.py
+      - _cola_completion
